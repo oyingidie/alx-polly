@@ -1,0 +1,81 @@
+# TypeScript Patterns
+
+## Type Definitions
+All types are centralized in [lib/types/index.ts](mdc:lib/types/index.ts):
+
+- **User**: Authentication user object
+- **Poll**: Poll data structure with options
+- **PollOption**: Individual poll choice
+- **Vote**: User vote record
+- **CreatePollData**: Data for creating new polls
+- **AuthCredentials**: Login credentials
+
+## Interface Usage
+- **Always define interfaces** for component props
+- **Use proper typing** for event handlers
+- **Extend existing interfaces** rather than creating duplicates
+- **Export types** from the types file for reuse
+
+## Component Props
+```typescript
+interface ComponentProps {
+  title: string
+  description?: string  // Optional props
+  children: React.ReactNode
+  onAction: (data: SomeType) => void
+}
+```
+
+## Event Handling
+```typescript
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target
+  // Handle change
+}
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  // Handle submission
+}
+```
+
+## State Management
+```typescript
+const [formData, setFormData] = useState<FormDataType>({
+  email: '',
+  password: ''
+})
+
+const [isLoading, setIsLoading] = useState<boolean>(false)
+const [error, setError] = useState<string>('')
+```
+
+## API Response Types
+```typescript
+interface ApiResponse<T> {
+  data: T | null
+  error: string | null
+  success: boolean
+}
+
+const response: ApiResponse<User> = await apiCall()
+```
+
+## Type Guards
+```typescript
+const isError = (err: unknown): err is Error => {
+  return err instanceof Error
+}
+
+try {
+  // Some operation
+} catch (err) {
+  if (isError(err)) {
+    setError(err.message)
+  }
+}
+```
+description:
+globs:
+alwaysApply: true
+---

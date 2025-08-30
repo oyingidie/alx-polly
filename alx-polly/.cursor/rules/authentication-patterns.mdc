@@ -1,0 +1,40 @@
+# Authentication Patterns
+
+## Supabase Integration
+The app uses Supabase for authentication. Key patterns:
+
+- **Auth Context**: Use [lib/auth/auth-context.tsx](mdc:lib/auth/auth-context.tsx) for auth state
+- **Hook Usage**: Always use `useAuth()` hook to access authentication functions
+- **Session Management**: Supabase handles session persistence automatically
+
+## Authentication Flow
+1. **Login**: `supabase.auth.signInWithPassword(email, password)`
+2. **Register**: `supabase.auth.signUp(email, password)`
+3. **Logout**: `supabase.auth.signOut()`
+4. **State Changes**: Listen to `onAuthStateChange` for real-time updates
+
+## Form Patterns
+- Use `'use client'` directive for client-side forms
+- Implement loading states with `useState` for better UX
+- Handle errors with Alert components from Shadcn UI
+- Validate forms before submission
+
+## Protected Routes
+- Check `user` object from `useAuth()` to determine access
+- Redirect unauthenticated users to login page
+- Use `useRouter()` for programmatic navigation
+
+## Example Usage
+```typescript
+const { user, signOut } = useAuth()
+const router = useRouter()
+
+if (!user) {
+  router.push('/auth/login')
+  return null
+}
+```
+description:
+globs:
+alwaysApply: true
+---

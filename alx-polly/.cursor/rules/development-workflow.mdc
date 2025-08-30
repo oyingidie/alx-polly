@@ -1,0 +1,61 @@
+# Development Workflow
+
+## Project Setup
+- **Node.js 18+** required
+- **Package manager**: npm (package-lock.json present)
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS v4 + Shadcn UI
+- **Database**: Supabase (configured for auth)
+
+## Development Commands
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+```
+
+## File Naming Conventions
+- **Pages**: `page.tsx` in route directories
+- **Components**: PascalCase (e.g., `Navigation.tsx`)
+- **Utilities**: camelCase (e.g., `auth-utils.ts`)
+- **Types**: `index.ts` in type directories
+
+## Code Organization
+- **Feature-based structure** over technical organization
+- **Single responsibility** for each component
+- **Reusable components** in appropriate directories
+- **Business logic** separated from UI components
+
+## Git Workflow
+- **Commit messages**: Use conventional commits (feat:, fix:, docs:)
+- **Branch strategy**: Main branch for development
+- **Pull requests**: For major features or refactoring
+- **Commit frequency**: Small, focused commits
+
+## Testing Strategy
+- **Component testing**: Test individual components
+- **Integration testing**: Test feature workflows
+- **E2E testing**: Test complete user journeys
+- **Type safety**: TypeScript provides compile-time checks
+
+## Performance Considerations
+- **Code splitting**: Next.js handles this automatically
+- **Image optimization**: Use Next.js Image component
+- **Bundle analysis**: Monitor bundle size with build tools
+- **Lazy loading**: Implement for heavy components
+
+## Security Best Practices
+- **Environment variables**: Store secrets in `.env.local`
+- **Input validation**: Validate all user inputs
+- **Authentication**: Use Supabase auth with proper session management
+- **HTTPS**: Always use in production
+
+## Deployment
+- **Platform**: Vercel recommended (Next.js creators)
+- **Environment**: Set Supabase environment variables
+- **Build process**: Automatic with git integration
+- **Monitoring**: Use Vercel analytics and error tracking
+description:
+globs:
+alwaysApply: true
+---

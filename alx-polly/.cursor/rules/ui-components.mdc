@@ -1,0 +1,51 @@
+# UI Components and Styling
+
+## Shadcn UI Components
+- **Never modify** components in `components/ui/` - these are from Shadcn
+- **Import from** `@/components/ui/` for all UI components
+- **Use variants** provided by components (e.g., `variant="outline"`, `size="sm"`)
+
+## Available Components
+- **Button**: `Button`, `Button variant="outline"`, `Button size="lg"`
+- **Card**: `Card`, `CardHeader`, `CardContent`, `CardTitle`, `CardDescription`
+- **Form**: `Input`, `Label`, `Textarea`, `Select`, `Form`
+- **Feedback**: `Alert`, `AlertTitle`, `AlertDescription`
+- **Layout**: `Dialog`, `Progress`
+
+## Styling Guidelines
+- **Tailwind CSS v4** is configured and ready to use
+- **Responsive design** with mobile-first approach
+- **Consistent spacing** using Tailwind's spacing scale
+- **Color scheme** follows Shadcn's default color palette
+
+## Layout Patterns
+- **Container**: Use `container mx-auto px-4` for page content
+- **Grid**: Use `grid gap-6 md:grid-cols-2 lg:grid-cols-3` for responsive layouts
+- **Spacing**: Use `space-y-4`, `mb-8`, `p-6` for consistent spacing
+- **Hover effects**: Add `hover:shadow-lg transition-shadow` for interactive elements
+
+## Form Styling
+- **Input groups**: Wrap in `space-y-2` for consistent spacing
+- **Error states**: Use `text-red-600 bg-red-50` for error messages
+- **Success states**: Use `text-green-600 bg-green-50` for success messages
+- **Loading states**: Disable inputs and show loading text in buttons
+
+## Example Usage
+```tsx
+<Card className="hover:shadow-lg transition-shadow">
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    <div className="space-y-2">
+      <Label htmlFor="input">Label</Label>
+      <Input id="input" placeholder="Placeholder" />
+    </div>
+  </CardContent>
+</Card>
+```
+description:
+globs:
+alwaysApply: true
+---

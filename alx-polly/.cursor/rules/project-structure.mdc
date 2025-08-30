@@ -1,0 +1,33 @@
+# ALX-Polly Project Structure
+
+## App Router Structure
+The project uses Next.js 15 App Router with the following organization:
+
+- **`app/`** - Next.js app directory with route-based pages
+  - **`auth/`** - Authentication pages (login, register)
+  - **`polls/`** - Poll management (listing, creation, individual views)
+  - **`dashboard/`** - User dashboard with statistics
+  - **`layout.tsx`** - Root layout with AuthProvider wrapper
+  - **`page.tsx`** - Root page that redirects to `/polls`
+
+## Component Organization
+- **`components/ui/`** - Shadcn UI base components (never modify these)
+- **`components/layout/`** - Layout components (Navigation, Footer, MainLayout)
+- **`components/auth/`** - Authentication-specific components
+- **`components/polls/`** - Poll-specific components
+
+## Library Structure
+- **`lib/auth/`** - Authentication utilities and context
+- **`lib/db/`** - Database utilities and data access
+- **`lib/types/` - TypeScript interfaces and type definitions
+- **`lib/utils/`** - General utility functions
+
+## Key Files
+- [app/layout.tsx](mdc:app/layout.tsx) - Root layout with AuthProvider
+- [lib/auth/auth-context.tsx](mdc:lib/auth/auth-context.tsx) - Authentication context
+- [components/layout/main-layout.tsx](mdc:components/layout/main-layout.tsx) - Main layout wrapper
+- [lib/types/index.ts](mdc:lib/types/index.ts) - TypeScript interfaces
+description:
+globs:
+alwaysApply: true
+---
