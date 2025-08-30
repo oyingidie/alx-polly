@@ -1,9 +1,15 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useAuth } from '@/lib/auth/auth-context'
 
 export default function Navigation() {
-  // Placeholder authentication state - replace with actual auth logic
-  const isAuthenticated = false
+  const { isAuthenticated, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+  }
 
   return (
     <nav className="border-b bg-white">
@@ -33,7 +39,9 @@ export default function Navigation() {
 
           <div className="flex items-center space-x-2">
             {isAuthenticated ? (
-              <Button variant="outline">Logout</Button>
+              <Button variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
             ) : (
               <>
                 <Link href="/auth/login">
