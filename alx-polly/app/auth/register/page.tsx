@@ -1,85 +1,57 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/auth/auth-context'
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import getSupabaseClient from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const router = useRouter()
-  const { register } = useAuth()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const supabase = getSupabaseClient();
+  const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-    // Clear messages when user starts typing
-    if (error) setError('')
-    if (success) setSuccess('')
-  }
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
 
-  const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      throw new Error('Please fill in all fields')
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
     }
 
-    if (formData.password.length < 6) {
-      throw new Error('Password must be at least 6 characters long')
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess('Registration successful! Please check your email to confirm your account.');
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 3000);
     }
-
-    if (formData.password !== formData.confirmPassword) {
-      throw new Error('Passwords do not match')
-    }
-
-    if (!formData.email.includes('@')) {
-      throw new Error('Please enter a valid email address')
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
-    setSuccess('')
-
-    try {
-      // Validate form
-      validateForm()
-
-      // Use auth context for registration
-      const success = await register(formData.name, formData.email, formData.password)
-      
-      if (success) {
-        setSuccess('Account created successfully! Redirecting to dashboard...')
-        
-        // Redirect to dashboard after a delay
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 2000)
-      } else {
-        throw new Error('Registration failed')
-      }
-
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -91,97 +63,58 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input 
-                id="name"
-                name="name"
-                type="text" 
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                required
-              />
-            </div>
-            
+          <form className="space-y-4" onSubmit={handleRegister}>
+            {error && (
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Alert>
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>{success}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input 
+              <Input
                 id="email"
-                name="email"
-                type="email" 
+                type="email"
                 placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
-            
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input 
+              <Input
                 id="password"
-                name="password"
-                type="password" 
+                type="password"
                 placeholder="Create a password"
-                value={formData.password}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
-            
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input 
+              <Input
                 id="confirmPassword"
-                name="confirmPassword"
-                type="password" 
+                type="password"
                 placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
-            
-            {error && (
-              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="text-sm text-green-600 bg-green-50 p-3 rounded-md">
-                {success}
-              </div>
-            )}
-
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating account...' : 'Create Account'}
             </Button>
-
-            <div className="text-center text-sm text-gray-600">
-              <p>Already have an account?</p>
-              <Button 
-                type="button" 
-                variant="link" 
-                className="p-0 h-auto text-blue-600"
-                onClick={() => router.push('/auth/login')}
-              >
-                Sign in here
-              </Button>
-            </div>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -5,10 +5,14 @@ import Link from "next/link"
 import { useAuth } from '@/lib/auth/auth-context'
 
 export default function Navigation() {
-  const { isAuthenticated, logout } = useAuth()
+  const auth = useAuth()
+  const user = auth?.user;
+  const signOut = auth?.signOut;
 
   const handleLogout = () => {
-    logout()
+    if (signOut) {
+      signOut()
+    }
   }
 
   return (
@@ -25,7 +29,7 @@ export default function Navigation() {
             <Link href="/polls">
               <Button variant="ghost">Polls</Button>
             </Link>
-            {isAuthenticated && (
+            {user && (
               <>
                 <Link href="/dashboard">
                   <Button variant="ghost">Dashboard</Button>
@@ -38,7 +42,7 @@ export default function Navigation() {
           </div>
 
           <div className="flex items-center space-x-2">
-            {isAuthenticated ? (
+            {user ? (
               <Button variant="outline" onClick={handleLogout}>
                 Logout
               </Button>

@@ -1,87 +1,50 @@
-'use client'
+'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import getSupabaseClient from '../supabase/client';
 
-interface User {
-  id: string
-  name: string
-  email: string
-}
+type AuthContextType = {
+  session: Session | null;
+  user: User | null;
+  signOut: () => void;
+};
 
-interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  register: (name: string, email: string, password: string) => Promise<boolean>
-  logout: () => void
-}
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = getSupabaseClient();
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      // Placeholder authentication logic
-      if (email === 'demo@example.com' && password === 'password') {
-        const mockUser: User = {
-          id: '1',
-          name: 'Demo User',
-          email: email
-        }
-        setUser(mockUser)
-        console.log('Login successful:', mockUser)
-        return true
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
       }
-      return false
-    } catch (error) {
-      console.error('Login error:', error)
-      return false
-    }
-  }
+    );
 
-  const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    try {
-      // Placeholder registration logic
-      const mockUser: User = {
-        id: Date.now().toString(),
-        name: name,
-        email: email
-      }
-      setUser(mockUser)
-      console.log('Registration successful:', mockUser)
-      return true
-    } catch (error) {
-      console.error('Registration error:', error)
-      return false
-    }
-  }
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
 
-  const logout = () => {
-    setUser(null)
-    console.log('Logout successful')
-  }
-
-  const value: AuthContextType = {
-    user,
-    isAuthenticated: !!user,
-    login,
-    register,
-    logout
-  }
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ session, user, signOut }}>
       {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
-export function useAuth() {
-  const context = useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
-}
+  return context;
+};
