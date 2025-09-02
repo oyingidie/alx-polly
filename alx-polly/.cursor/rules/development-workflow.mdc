@@ -55,7 +55,29 @@ npm run start    # Start production server
 - **Environment**: Set Supabase environment variables
 - **Build process**: Automatic with git integration
 - **Monitoring**: Use Vercel analytics and error tracking
-description:
-globs:
-alwaysApply: true
----
+
+## Core Development Rules
+
+### Code Patterns to Follow
+- Use a form that calls a Server Action to handle data submission. This keeps client-side JavaScript minimal.
+- Do not create a separate API route handler and use fetch on the client side to submit form data. Use Server Actions instead.
+- Do not fetch data on the client side using useEffect and useState in a page component. Fetch data directly in a Server Component.
+
+### Verification Checklist
+Before finalizing your response, you MUST verify the following:
+
+- Does the code use the Next.js App Router and Server Components for data fetching?
+- Are Server Actions used for data mutations (forms)?
+- Is the Supabase client used for all database interactions?
+- Are shadcn/ui components used for the UI where appropriate?
+- Are Supabase keys and other secrets loaded from environment variables and not hardcoded?
+
+## Senior Developer Expectations
+As a Senior Fullstack developer, you are expected to:
+
+- **Follow established patterns** without deviation
+- **Implement proper error handling** and user feedback
+- **Ensure type safety** throughout the codebase
+- **Maintain performance** and accessibility standards
+- **Write maintainable code** that follows the project's architecture
+- **Never compromise security** by hardcoding secrets or bypassing validation

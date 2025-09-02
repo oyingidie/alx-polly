@@ -1,5 +1,11 @@
 # UI Components and Styling
 
+## Component Architecture
+- **Prefer Server Components** for data fetching and display
+- **Use Client Components** only when interactivity is required (hooks, event listeners)
+- **Server Components** should handle data fetching using Supabase client
+- **Client Components** should handle user interactions and local state
+
 ## Shadcn UI Components
 - **Never modify** components in `components/ui/` - these are from Shadcn
 - **Import from** `@/components/ui/` for all UI components
@@ -30,6 +36,32 @@
 - **Success states**: Use `text-green-600 bg-green-50` for success messages
 - **Loading states**: Disable inputs and show loading text in buttons
 
+## Server vs Client Components
+```tsx
+// Server Component - Data fetching
+async function PollsList() {
+  const polls = await getPolls() // Server-side data fetch
+  
+  return (
+    <div className="grid gap-6">
+      {polls.map(poll => <PollCard key={poll.id} poll={poll} />)}
+    </div>
+  )
+}
+
+// Client Component - Interactivity
+'use client'
+function CreatePollForm() {
+  const [formData, setFormData] = useState({})
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields */}
+    </form>
+  )
+}
+```
+
 ## Example Usage
 ```tsx
 <Card className="hover:shadow-lg transition-shadow">
@@ -45,7 +77,12 @@
   </CardContent>
 </Card>
 ```
-description:
-globs:
-alwaysApply: true
----
+
+## Verification Checklist
+Before implementing UI components, verify:
+
+- Is the component a Server Component for data fetching?
+- Is it a Client Component only when interactivity is needed?
+- Are Shadcn UI components used appropriately?
+- Is the styling consistent with the established patterns?
+- Is the component properly typed with TypeScript interfaces?

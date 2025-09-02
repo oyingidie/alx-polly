@@ -19,10 +19,23 @@ The app uses Supabase for authentication. Key patterns:
 - Handle errors with Alert components from Shadcn UI
 - Validate forms before submission
 
+## Server Actions Integration
+- **Use Server Actions** for authentication mutations instead of API routes
+- **Form submissions** should call Server Actions directly
+- **Client-side state** only for UI interactions, not data fetching
+- **Error handling** within Server Actions using try/catch blocks
+
 ## Protected Routes
 - Check `user` object from `useAuth()` to determine access
 - Redirect unauthenticated users to login page
 - Use `useRouter()` for programmatic navigation
+- Implement route protection at the component level
+
+## Environment Variables
+- **Never hardcode** Supabase credentials
+- Use `process.env.NEXT_PUBLIC_SUPABASE_URL` for client-side access
+- Use `process.env.SUPABASE_SECRET_KEY` for server-side operations
+- Store secrets in `.env.local` file
 
 ## Example Usage
 ```typescript
@@ -34,7 +47,11 @@ if (!user) {
   return null
 }
 ```
-description:
-globs:
-alwaysApply: true
----
+
+## Verification Checklist
+Before implementing authentication features, verify:
+
+- Are Server Actions used for authentication mutations?
+- Is the Supabase client properly configured with environment variables?
+- Are authentication errors handled gracefully with user feedback?
+- Is the auth state properly managed across the application?

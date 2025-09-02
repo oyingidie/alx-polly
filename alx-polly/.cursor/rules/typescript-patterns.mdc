@@ -50,6 +50,52 @@ const [isLoading, setIsLoading] = useState<boolean>(false)
 const [error, setError] = useState<string>('')
 ```
 
+## Server Actions Types
+```typescript
+// Server Action for form submission
+async function createPoll(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  'use server'
+  
+  try {
+    // Validate and process form data
+    const pollData = validatePollData(formData)
+    
+    // Database operation
+    const result = await insertPoll(pollData)
+    
+    return { success: true }
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }
+  }
+}
+
+// Form component using Server Action
+'use client'
+function CreatePollForm() {
+  const [pending, startTransition] = useTransition()
+  
+  const handleSubmit = (formData: FormData) => {
+    startTransition(async () => {
+      const result = await createPoll(formData)
+      if (result.success) {
+        // Handle success
+      } else {
+        // Handle error
+      }
+    })
+  }
+  
+  return (
+    <form action={handleSubmit}>
+      {/* Form fields */}
+    </form>
+  )
+}
+```
+
 ## API Response Types
 ```typescript
 interface ApiResponse<T> {
@@ -75,7 +121,12 @@ try {
   }
 }
 ```
-description:
-globs:
-alwaysApply: true
----
+
+## Verification Checklist
+Before implementing TypeScript features, verify:
+
+- Are all component props properly typed with interfaces?
+- Are event handlers correctly typed for their events?
+- Are Server Actions properly typed with return types?
+- Are error handling patterns using proper type guards?
+- Are types exported and imported correctly from the types file?
