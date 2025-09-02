@@ -2,16 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useAuth } from '@/lib/auth/auth-context'
+import { useAuth } from '@/components/auth/auth-provider'
 
 export default function Navigation() {
-  const auth = useAuth()
-  const user = auth?.user;
-  const signOut = auth?.signOut;
+  const { user, signOut } = useAuth()
 
-  const handleLogout = () => {
-    if (signOut) {
-      signOut()
+  const handleLogout = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Error signing out:', error)
     }
   }
 
@@ -48,10 +48,10 @@ export default function Navigation() {
               </Button>
             ) : (
               <>
-                <Link href="/auth/login">
+                <Link href="/login">
                   <Button variant="ghost">Login</Button>
                 </Link>
-                <Link href="/auth/register">
+                <Link href="/register">
                   <Button>Sign Up</Button>
                 </Link>
               </>
