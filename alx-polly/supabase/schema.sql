@@ -317,3 +317,26 @@ CREATE TRIGGER update_poll_options_updated_at BEFORE UPDATE ON public.poll_optio
 
 CREATE TRIGGER update_votes_updated_at BEFORE UPDATE ON public.votes
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
+-- Grant usage on schema to Supabase roles
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+-- Grant permissions to tables
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO service_role;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO service_role;
+
+GRANT SELECT ON public.users TO anon, authenticated;
+GRANT SELECT ON public.polls TO anon, authenticated;
+GRANT SELECT ON public.poll_options TO anon, authenticated;
+GRANT SELECT ON public.votes TO anon, authenticated;
+GRANT SELECT ON public.categories TO anon, authenticated;
+GRANT SELECT ON public.poll_categories TO anon, authenticated;
+
+GRANT INSERT, UPDATE, DELETE ON public.users TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.polls TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.poll_options TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.votes TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.categories TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.poll_categories TO authenticated;
