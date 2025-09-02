@@ -1,3 +1,5 @@
+"use client"
+
 import { CreatePollForm } from "@/components/forms/create-poll-form"
 
 export default function CreatePollPage() {
