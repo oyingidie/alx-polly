@@ -252,7 +252,7 @@ CREATE OR REPLACE FUNCTION create_poll_with_options(
     p_is_anonymous BOOLEAN DEFAULT FALSE,
     p_options TEXT[] DEFAULT '{}'
 )
-RETURNS UUID AS $$
+RETURNS UUID AS $
 DECLARE
     poll_id UUID;
     option_text TEXT;
@@ -285,7 +285,7 @@ BEGIN
     
     RETURN poll_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$ LANGUAGE plpgsql SECURITY INVOKER;
 
 -- Insert some default categories
 INSERT INTO public.categories (name, description, color) VALUES
@@ -298,12 +298,12 @@ INSERT INTO public.categories (name, description, color) VALUES
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $function$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$function$ LANGUAGE plpgsql;
 
 -- Add updated_at triggers
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users
